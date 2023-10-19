@@ -1,0 +1,40 @@
+name: simple
+prefix: ""
+
+mgmt:
+  network: statics
+  ipv4-subnet: 172.100.100.0/24
+  ipv4-range: 172.100.100.128/25
+
+topology:
+  kinds:
+    ceos:
+      image: ceos:4.28.4M
+  nodes:
+    eos1:
+      kind: ceos
+      startup-config: configs/eos1-startup-cfg.cfg
+      ports:
+        - 8080:22
+    eos2:
+      kind: ceos
+      startup-config: configs/eos2-startup-cfg.cfg
+      ports:
+        - 8081:22
+    netauto-box:
+      kind: linux
+      ports:
+        - 8082:22
+      image: python:slim
+      binds:
+        - netdemo_app:/app
+      exec:
+        - pip install -r app/requirements.txt
+      env:
+        # Device login credentials - very secure :)
+        NET_TEXT_USER: admin
+        NET_TEXT_PASS: admin
+        # Support more terminal colors by changing TERM env var
+        TERM: xterm-256color
+  links:
+    - endpoints: ["eos1:eth1", "eos2:eth1"]

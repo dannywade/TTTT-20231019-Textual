@@ -67,10 +67,11 @@ class NetDemo(App):
         host = self.query_one("#hostname_input").value
         config_text = self.query_one("#config_area", TextArea)
         # Show loading indicator while device is being configured
-        config_text.clear()
         config_text.loading = True
         # Convert configuration from string to list of commands
-        config_list = config_text.text.split()
+        print(config_text.text)
+        config_list = config_text.text.split("\n")
+        print(config_list)
         # Configure the devices
         self.configure_device(host, config_list)
 
